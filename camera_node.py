@@ -7,9 +7,9 @@ import time
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
-
+# nodo che pubblica sui due topic "image_topic" e "qr_topic" le immagini acquisite dalla PiCamera
 class ImagePublisher(object):
-
+    # metodo init invocato al momento della creazione di un oggetto della classe
     def __init__(self):
         self.node_rate = 10
         self.image_pub = rospy.Publisher("image_topic", Image, queue_size=1)
@@ -19,7 +19,7 @@ class ImagePublisher(object):
         self.camera.resolution = (640, 480)
         self.camera.framerate = 32
         self.rawCapture = PiRGBArray(self.camera, size=(640, 480))
-
+    # metodo get_img che permette di ottenere un'immagine dalla piCamera
     def get_img(self):
         self.camera.capture(self.rawCapture, format='bgr')
         cv_image = self.rawCapture.array
@@ -28,7 +28,7 @@ class ImagePublisher(object):
             image_message = self.bridge.cv2_to_imgmsg(cv_image, "bgr8")
         except CVBridgeError as e:
             print(e)
-
+	#immagine pubblicata sui due topic
         self.image_pub.publish(image_message)
         self.landmark_pub.publish(image_message)
         print('{CAMERA_NODE} Publishing! ')
@@ -40,5 +40,6 @@ if __name__ == '__main__':
     rospy.init_node('image_getter', anonymous=True)
     loop = rospy.Rate(image_getter.node_rate)
     while not rospy.is_shutdown():
+	#chiamata del metodo get_img su un oggetto della classe ImagePublisher
         image_getter.get_img()
         loop.sleep()
