@@ -14,10 +14,13 @@ class MotorDriver(object):
         self.wheel_radius = 0.0172
         self.PWM1 = 0
         self.PWM2 = 0
+        # pin ruota sinistra
         self.in1 = 27
         self.in2 = 17
+        # pin ruota destra
         self.in3 = 6
         self.in4 = 5
+        # pin di enable
         self.en1 = 12
         self.en2 = 13
 
@@ -155,11 +158,12 @@ class MotorDriver(object):
             pass
 
     def change_speed(self, ls, a_s):
-        # stabiliamo se il cerchio che dobbiamo percorrere  e piccolo o grande
+        # stabiliamo se il cerchio che dobbiamo percorrere  e piccolo o grande 
+        # a seconda dei valori di velocità lineare e accelerazione angolare
         body_turn_radius = self.calculate_body_turn_radius(ls, a_s)
 
+        # calcoliamo sulla base di quanto deve girare il robot quale deve essere il raggio della curva delle signole ruote
         wheel = 'right'
-        # calcoliamo sulla base di quanto deve girare il robot quale  il raggio della curva delle signole ruote
         right_wheel_turn_radius = self.calculate_wheel_turn_radius(body_turn_radius, wheel)
         wheel = 'left'
         left_wheel_turn_radius = self.calculate_wheel_turn_radius(body_turn_radius, wheel)
