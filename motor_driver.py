@@ -30,6 +30,7 @@ class MotorDriver(object):
         self.MAX_PWM = 100
 
         self.MULTIPLIER_STANDARD = 0.3
+        # nel codice era messo 1.0 quello del pivot e 0.1 quello standard
         self.MULTIPLIER_PIVOT = 0.3
 
         GPIO.setmode(GPIO.BCM)
@@ -91,21 +92,27 @@ class MotorDriver(object):
         self.PWM2 = min(int(rpm_speed_2 * multiplier * self.BASE_PWM), self.MAX_PWM)
         self.p1.ChangeDutyCycle(self.PWM1)
         self.p2.ChangeDutyCycle(self.PWM2)
-
+    # sulla base dei valori di velocità lineare e angolare passati come argomento si calcola il body turn radius, infatti in base
+    # al rapporto fra questi due valori il cerchio che il robot deve compiere spostandosi sarà più piccolo o più grande. Se il valore
+    # del body turn radius è più piccolo significa che il robot dovrà ruotare di più rispetto ad andare dritto, se il valore è più grande
+    # vale il viceversa.
     def calculate_body_turn_radius(self, linear_speed, angular_speed):
         if angular_speed != 0.0:
             body_turn_radius = linear_speed / angular_speed
         else:
             body_turn_radius = None
         return body_turn_radius
-
+    # metodo per calcolare il raggio di rotazione delle ruote sulla base del body_turn_radius, a seconda se 
+    # il robot deve girare a destra o sinistra una delle due ruote dovrà girare più dell'altra. Se deve girare a dx
+    # la ruota dx deve girare meno rispetto alla ruota sinistra.
     def calculate_wheel_turn_radius(self, body_turn_radius, wheel):
         if body_turn_radius is not None:
             if wheel == 'right':
                 wheel_sign = 1
             else:
                 wheel_sign = -1
-
+            # sommiamo(ruota dx) o sottraiamo(ruota sx) al body turn radius la metà della distanza fra le ruote per ottenere
+            # il raggio di rotazione della singola ruota
             wheel_turn_radius = body_turn_radius + (wheel_sign * (self.wheel_distance / 2.0))
         else:
             wheel_turn_radius = None
