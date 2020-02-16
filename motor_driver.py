@@ -9,8 +9,9 @@ import time
 class MotorDriver(object):
 
     def __init__(self):
-
+        #distanza tra le ruote
         self.wheel_distance = 0.158
+        # raggio delle ruote
         self.wheel_radius = 0.0172
         self.PWM1 = 0
         self.PWM2 = 0
