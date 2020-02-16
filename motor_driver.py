@@ -5,6 +5,7 @@ import rospy
 import RPi.GPIO as GPIO
 import time
 
+# classe che implementa la guida differenziale
 
 class MotorDriver(object):
 
@@ -22,8 +23,8 @@ class MotorDriver(object):
         self.in3 = 6
         self.in4 = 5
         # pin di enable
-        self.en1 = 12
-        self.en2 = 13
+        self.en1 = 13
+        self.en2 = 12
 
         self.BASE_PWM = 50
         self.MAX_PWM = 100
@@ -33,6 +34,7 @@ class MotorDriver(object):
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
+        # setto i 3 pin delle ruote come pin di output
         GPIO.setup(self.in1, GPIO.OUT)
         GPIO.setup(self.in2, GPIO.OUT)
         GPIO.setup(self.en1, GPIO.OUT)
