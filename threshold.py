@@ -2,6 +2,7 @@
 import cv2 as cv
 import argparse
 
+# codice preso dal seguente link https://docs.opencv.org/3.4/da/d97/tutorial_threshold_inRange.html che permette di fare un'operazione di sogliatura e ottenere i valori alti e bassi delle maschere di colore.
 max_value = 255
 max_value_H = 360//2
 low_H = 0
@@ -18,8 +19,9 @@ low_V_name = 'Low V'
 high_H_name = 'High H'
 high_S_name = 'High S'
 high_V_name = 'High V'
-
-
+# è necessario trovare il valore di massimo e di minimo per evitare le discrepanze 
+# ossia che il valore alto della threshold diventi minore del valore basso.
+# Per una trackbar che controlla l'estremo inferiore del range:
 def on_low_H_thresh_trackbar(val):
     global low_H
     global high_H
@@ -27,7 +29,7 @@ def on_low_H_thresh_trackbar(val):
     low_H = min(high_H-1, low_H)
     cv.setTrackbarPos(low_H_name, window_detection_name, low_H)
 
-
+# Per una trackbar che controlla l'estremo superiore del range:
 def on_high_H_thresh_trackbar(val):
     global low_H
     global high_H
@@ -73,12 +75,13 @@ def on_high_V_thresh_trackbar(val):
 # args = parser.parse_args()
 # cap = cv.VideoCapture(args.camera)
 
+# Cattura il flusso video dal dispositivo di acquisizione predefinito o fornito.
 cap = cv.VideoCapture(0)
-# Create a window to display the default frame and the threshold frame
+# Crea una finestra per mostrare il frame di default e quello a cui è applicata la soglia
 cv.namedWindow(window_capture_name)
 cv.namedWindow(window_detection_name)
 
-# Create the trackbars to set the range of HSV values
+# Creazione delle trackbar per impostare il range di valori HSV
 
 cv.createTrackbar(low_H_name, window_detection_name, low_H, max_value_H, on_low_H_thresh_trackbar)
 cv.createTrackbar(high_H_name, window_detection_name, high_H, max_value_H, on_high_H_thresh_trackbar)
@@ -87,15 +90,15 @@ cv.createTrackbar(high_S_name, window_detection_name, high_S, max_value, on_high
 cv.createTrackbar(low_V_name, window_detection_name, low_V, max_value, on_low_V_thresh_trackbar)
 cv.createTrackbar(high_V_name, window_detection_name, high_V, max_value, on_high_V_thresh_trackbar)
 
+# finchè l'utente non decide di uscire dal programma
 while True:
     ret, frame = cap.read()
     if frame is None:
         break
-    #uframe = cv.resize(frame, (200, 200))
     frame_HSV = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
     frame_threshold = cv.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
     cv.imshow(window_capture_name, frame)
     cv.imshow(window_detection_name, frame_threshold)
     key = cv.waitKey(30)
     if key == ord('q') or key == 27:
-        break
+	    break
