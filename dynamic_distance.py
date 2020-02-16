@@ -4,6 +4,7 @@ import cv2
 from scipy import interpolate
 import csv
 
+# classe utilizzata per calcolare la distanza di un oggetto rilevato dalla fotocamera.
 
 class Distance:
 
@@ -107,11 +108,13 @@ class Distance:
                 final_target = target_results[index]
 
         return final_area, final_target
-
+    # funzione che data in ingresso un valore di area tramite un'interpolazione restituisce la distanza
     def distancetoCamera(self, sup):
-        if sup > 111459.0:  # ostacolo imminente
+	# se l'area è maggiore del valore più alto possibile si restituisce 0 e l'ostacolo è considerato imminente
+        if sup > 111459.0:
             return 0
-        elif sup < 3937.5:  # ostacolo lontano
+	# se l'area è minore del valore più basso possibile si restituisce 200 e l'ostacolo è considerato lontano o non visibile
+        elif sup < 3937.5: 
             return 200
         else:
             f = interpolate.interp1d(self.x, self.y)
