@@ -59,7 +59,7 @@ class MotorDriver(object):
         GPIO.output(self.in2, v2)
         GPIO.output(self.in3, v3)
         GPIO.output(self.in4, v4)
-
+    # imposto alti o bassi i valori dei pin a cui sono collegate le ruote per ottenere comportamenti diversi
     def forward(self):
         self.set_motor(GPIO.HIGH, GPIO.LOW, GPIO.HIGH, GPIO.LOW)
 
@@ -86,7 +86,8 @@ class MotorDriver(object):
 
     def right_reverse(self):
         self.set_motor(GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.HIGH)
-
+    # metodo per settare i due PWM delle ruote, sulla base della velocità della ruota, di un moltiplicatore e del PWM di base, limitati 
+    # considerando il minimo tra questa quantità e MAX_PWM possibile
     def set_speed(self, rpm_speed_1, rpm_speed_2, multiplier):
         self.PWM1 = min(int(rpm_speed_1 * multiplier * self.BASE_PWM), self.MAX_PWM)
         self.PWM2 = min(int(rpm_speed_2 * multiplier * self.BASE_PWM), self.MAX_PWM)
@@ -97,9 +98,9 @@ class MotorDriver(object):
     # del body turn radius è più piccolo significa che il robot dovrà ruotare di più rispetto ad andare dritto, se il valore è più grande
     # vale il viceversa.
     def calculate_body_turn_radius(self, linear_speed, angular_speed):
-        if angular_speed != 0.0:
+        if angular_speed != 0.0: 
             body_turn_radius = linear_speed / angular_speed
-        else:
+        else: # se avessimo una velocità angolare negativa, avremmo un body turn radius infinito-> lo impostiamo a None
             body_turn_radius = None
         return body_turn_radius
     # metodo per calcolare il raggio di rotazione delle ruote sulla base del body_turn_radius, a seconda se 
@@ -114,29 +115,28 @@ class MotorDriver(object):
             # sommiamo(ruota dx) o sottraiamo(ruota sx) al body turn radius la metà della distanza fra le ruote per ottenere
             # il raggio di rotazione della singola ruota
             wheel_turn_radius = body_turn_radius + (wheel_sign * (self.wheel_distance / 2.0))
-        else:
+        else: # nel caso di velocità angolare nulla, se il robot va dritto
             wheel_turn_radius = None
         return wheel_turn_radius
-
+    # metodo per calcolare la velocità con cui le ruote girano
     def calculate_wheel_rpm(self, linear_speed, angular_speed, wheel_turn_radius):
-        if wheel_turn_radius is not None:
-            wheel_rpm = (angular_speed * wheel_turn_radius) / self.wheel_radius
-        else:
-
+        if wheel_turn_radius is not None: # robot sta girando
+            wheel_rpm = (angular_speed * wheel_turn_radius) / self.wheel_radius # calcoliamo la velocità lineare di ogni ruota
+            # come velocità angolare * raggio di rotazione della singola ruota
+        else: # robot sta andando dritto o indietro, quindi la velocità lineare è la stessa per ambedue le ruote
             wheel_rpm = linear_speed / self.wheel_radius
 
         return wheel_rpm
 
     def set_wheel_movement(self, right_wheel_rpm, left_wheel_rpm):
         # sulla base del fatto che i due valori passati come argomento siano positivi, negativi o
-        # nulli andiamo a passare dei valori alti o bassi ai pin GPIO
-        # usiamo il valore assoluto perche non possiamo passare valori negativi a set_speed
-        # visto che servono per variare il duty cycle
-        if right_wheel_rpm > 0.0 and left_wheel_rpm > 0.0:
+        # nulli si settano prima le velocità delle due ruote con il metodo set_speed e poi si setta la direzione
+        # con il metodo opportuno
+        if right_wheel_rpm > 0.0 and left_wheel_rpm > 0.0: # entrambe le velocità delle ruote sono positive, si vuole andare dritto
             self.set_speed(abs(right_wheel_rpm), abs(left_wheel_rpm), self.MULTIPLIER_STANDARD)
             self.forward()
 
-        elif right_wheel_rpm > 0.0 and left_wheel_rpm == 0.0:
+        elif right_wheel_rpm > 0.0 and left_wheel_rpm == 0.0: # si vuole andare a sinistra
             self.set_speed(abs(right_wheel_rpm), abs(left_wheel_rpm), self.MULTIPLIER_STANDARD)
             self.left()
 
@@ -155,7 +155,7 @@ class MotorDriver(object):
 
             self.pivot_right()
 
-        elif right_wheel_rpm < 0.0 and left_wheel_rpm < 0.0:
+        elif right_wheel_rpm < 0.0 and left_wheel_rpm < 0.0: # si vuole andare indietro
             self.set_speed(abs(right_wheel_rpm), abs(left_wheel_rpm), self.MULTIPLIER_STANDARD)
 
             self.reverse()
