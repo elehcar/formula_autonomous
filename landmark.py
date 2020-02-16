@@ -4,15 +4,17 @@ import numpy as np
 from scipy import interpolate
 import csv
 
-
+# classe utilizzata per ottenere le informazioni contenute nel qr code del landmark e la distanza della camera da esso
 class Landmark:
 
     def __init__(self):
         self.distance = 200
         self.qr_data = None
         self.detector = cv2.QRCodeDetector()
-        self.x = np.array([])
-        self.y = np.array([])
+	# creazione dei vettori in cui vengono inseriti con un'iterazione
+	# i valori delle distanze contenuti nel file landmark.csv
+        self.x = np.array([]) # vettore delle aree
+        self.y = np.array([]) # vettore delle distanze
         file_name = open('landmark.csv', 'rt')
         reader = csv.reader(file_name)
         for row in reader:
@@ -20,7 +22,8 @@ class Landmark:
             self.y = np.append(self.y, row[0])
         self.x = self.x.astype(float)
         self.y = self.y.astype(float)
-
+    # funzione per ottenere informazioni dal landmark all'interno dell'immagine passata
+    # come argomento
     def get_qrdata(self, img):
         data, bbox, _ = self.detector.detectAndDecode(img)
         if data:  # aggiorno distanza e qr_code quando vedo un landmark
@@ -28,20 +31,25 @@ class Landmark:
             self.qr_data = data
         # se non ne vedo ritorno quella precedente
         return self.qr_data, self.distance
-
+    # funzione per ottenere la distanza di un landmark identificato dal vettore di punti "points" passato come argomento 
     def get_distance(self, points):
         x1 = points.item(0)
         x2 = points.item(2)
         y2 = points.item(3)
         y3 = points.item(5)
+	# calcolo l'area come base per altezza con i vertici opportuni
         h = abs(x1-x2)
         b = abs(y2-y3)
         area = h*b
+	# se l'area è maggiore di quella massima contenuta nel file si restituisce 0
         if area > 945.2836298234761:
-            dist = 0
+            dist = 0 # landmark troppo vicino
+	# se l'area è minore di quella minima contenuta nel file si restituisce 200
         elif area < 75.92754949163646:
-            dist = 200
-        else:
+            dist = 200 # landmark troppo lontano o non visibile
+	# se non siamo in nessuno dei due casi precedenti ricaviamo la distanza 
+	# attraverso un'interpolazione sui vettori di area e distanza ricavati dai valori del file landmark.csv        
+	    else:
             f = interpolate.interp1d(self.x, self.y)
             dist = f(area)
         return dist
