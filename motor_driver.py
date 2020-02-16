@@ -42,10 +42,10 @@ class MotorDriver(object):
         GPIO.setup(self.in3, GPIO.OUT)
         GPIO.setup(self.in4, GPIO.OUT)
         GPIO.setup(self.en2, GPIO.OUT)
-
+        # impostiamo i due pin di PWM con una frequenza di 1KHz
         self.p1 = GPIO.PWM(self.en1, 1000)
         self.p2 = GPIO.PWM(self.en2, 1000)
-
+        # imposta un duty cicle dello 0%
         self.p1.start(self.PWM1)
         self.p2.start(self.PWM2)
 
