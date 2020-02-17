@@ -38,13 +38,13 @@ class LineFollower(object):
             self.cmd_vel.linear.x = -1000
         elif left_ir and not right_ir:
             # il sensore sx rileva la linea -> vado a sinistra
-            self.cmd_vel.angular.z = self.angular_vel_base * -1 # rendo la velocità angolare di base negativa
+            self.cmd_vel.angular.z = self.angular_vel_base # rendo la velocità angolare di base positiva
             self.cmd_vel.linear.x = self.linear_vel_base # la velocità lineare è quella di base
             print("{LINE_FOLLOWER} SPEED==>[" + str(self.cmd_vel.linear.x) + "," + str(self.cmd_vel.angular.z) + "]")
 
         elif right_ir and not left_ir:
             # il sensore dx rileva la linea -> vado a destra
-            self.cmd_vel.angular.z = self.angular_vel_base
+            self.cmd_vel.angular.z = self.angular_vel_base *-1 # velocità angolare negativa per andare a dx
             self.cmd_vel.linear.x = self.linear_vel_base
             print("{LINE_FOLLOWER} SPEED==>[" + str(self.cmd_vel.linear.x) + "," + str(self.cmd_vel.angular.z) + "]")
 
