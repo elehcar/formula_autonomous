@@ -59,6 +59,7 @@ class MotorDriver(object):
         GPIO.output(self.in2, v2)
         GPIO.output(self.in3, v3)
         GPIO.output(self.in4, v4)
+        
     # imposto alti o bassi i valori dei pin a cui sono collegate le ruote per ottenere comportamenti diversi
     def forward(self):
         self.set_motor(GPIO.HIGH, GPIO.LOW, GPIO.HIGH, GPIO.LOW)
@@ -86,13 +87,15 @@ class MotorDriver(object):
 
     def right_reverse(self):
         self.set_motor(GPIO.LOW, GPIO.LOW, GPIO.LOW, GPIO.HIGH)
-    # metodo per settare i due PWM delle ruote, sulla base della velocità della ruota, di un moltiplicatore e del PWM di base, limitati 
+        
+    # metodo per settare i due PWM delle ruote sulla base della velocità della ruota, di un moltiplicatore e del PWM di base, limitati 
     # considerando il minimo tra questa quantità e MAX_PWM possibile
     def set_speed(self, rpm_speed_1, rpm_speed_2, multiplier):
         self.PWM1 = min(int(rpm_speed_1 * multiplier * self.BASE_PWM), self.MAX_PWM)
         self.PWM2 = min(int(rpm_speed_2 * multiplier * self.BASE_PWM), self.MAX_PWM)
         self.p1.ChangeDutyCycle(self.PWM1)
         self.p2.ChangeDutyCycle(self.PWM2)
+        
     # sulla base dei valori di velocità lineare e angolare passati come argomento si calcola il body turn radius, infatti in base
     # al rapporto fra questi due valori il cerchio che il robot deve compiere spostandosi sarà più piccolo o più grande. Se il valore
     # del body turn radius è più piccolo significa che il robot dovrà ruotare di più rispetto ad andare dritto, se il valore è più grande
@@ -100,9 +103,10 @@ class MotorDriver(object):
     def calculate_body_turn_radius(self, linear_speed, angular_speed):
         if angular_speed != 0.0: 
             body_turn_radius = linear_speed / angular_speed
-        else: # se avessimo una velocità angolare negativa, avremmo un body turn radius infinito-> lo impostiamo a None
+        else: # se avessimo una velocità angolare negativa, avremmo un body turn radius infinito -> lo impostiamo a None
             body_turn_radius = None
         return body_turn_radius
+    
     # metodo per calcolare il raggio di rotazione delle ruote sulla base del body_turn_radius, a seconda se 
     # il robot deve girare a destra o sinistra una delle due ruote dovrà girare più dell'altra. Se deve girare a dx
     # la ruota dx deve girare meno rispetto alla ruota sinistra.
@@ -115,9 +119,10 @@ class MotorDriver(object):
             # sommiamo(ruota dx) o sottraiamo(ruota sx) al body turn radius la metà della distanza fra le ruote per ottenere
             # il raggio di rotazione della singola ruota
             wheel_turn_radius = body_turn_radius + (wheel_sign * (self.wheel_distance / 2.0))
-        else: # nel caso di velocità angolare nulla, se il robot va dritto
+        else: # nel caso di velocità angolare nulla, ovvero se il robot va dritto
             wheel_turn_radius = None
         return wheel_turn_radius
+    
     # metodo per calcolare la velocità con cui le ruote girano
     def calculate_wheel_rpm(self, linear_speed, angular_speed, wheel_turn_radius):
         if wheel_turn_radius is not None: # robot sta girando
@@ -168,17 +173,17 @@ class MotorDriver(object):
             pass
 
     def change_speed(self, ls, a_s):
-        # stabiliamo se il cerchio che dobbiamo percorrere  e piccolo o grande 
+        # stabiliamo se il cerchio che dobbiamo percorrere è piccolo o grande 
         # a seconda dei valori di velocità lineare e accelerazione angolare
         body_turn_radius = self.calculate_body_turn_radius(ls, a_s)
 
-        # calcoliamo sulla base di quanto deve girare il robot quale deve essere il raggio della curva delle signole ruote
+        # calcoliamo sulla base di quanto deve girare il robot quale deve essere il raggio della curva delle singole ruote
         wheel = 'right'
         right_wheel_turn_radius = self.calculate_wheel_turn_radius(body_turn_radius, wheel)
         wheel = 'left'
         left_wheel_turn_radius = self.calculate_wheel_turn_radius(body_turn_radius, wheel)
 
-        # calcoliamo la velocita di rotazione delle singole ruote
+        # calcoliamo la velocità di rotazione delle singole ruote
         right_wheel_rpm = self.calculate_wheel_rpm(ls, a_s, right_wheel_turn_radius)
         left_wheel_rpm = self.calculate_wheel_rpm(ls, a_s, left_wheel_turn_radius)
 
