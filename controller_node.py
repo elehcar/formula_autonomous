@@ -50,7 +50,7 @@ class ControllerNode(object):
             # contro la parete
             if (self.orientation == 0 and self.line_angular < 0) or (self.orientation == 1 and self.line_angular > 0):
                 self.angular = self.line_angular * -1
-            else: # se non siamo nella situazione critica precedente passa l'accelerazione angolare così come pubblicata
+            else: # se non siamo nella situazione critica precedente passa la velocità angolare così come pubblicata
                   # dal nodo line_follower
                 self.angular = self.line_angular
             self.orientation = None
@@ -58,9 +58,9 @@ class ControllerNode(object):
             print("{DECISION_NODE} SPEED==> Line: [" + str(self.linear) + "," + str(self.angular) + "]")
         # se invece ci sono gli ostacoli da considerare
         else:
-            if self.ob_angular < 0:  # accelerazione angolare negativa, il robot gira a sx
+            if self.ob_angular < 0:  # velocità angolare negativa, il robot gira a sx
                 self.orientation = 0
-            else:  # accelerazione angolare positiva il robot gira a dx
+            else:  # velocità angolare positiva il robot gira a dx
                 self.orientation = 1
             self.linear = self.ob_linear
             self.angular = self.ob_angular
