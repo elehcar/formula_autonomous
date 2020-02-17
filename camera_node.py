@@ -19,7 +19,7 @@ class ImagePublisher(object):
         self.camera.resolution = (640, 480)
         self.camera.framerate = 32
         self.rawCapture = PiRGBArray(self.camera, size=(640, 480))
-    # metodo get_img che permette di ottenere un'immagine dalla piCamera
+    # metodo get_img che permette di ottenere un'immagine dalla piCamera e pubblicarla
     def get_img(self):
         self.camera.capture(self.rawCapture, format='bgr')
         cv_image = self.rawCapture.array
