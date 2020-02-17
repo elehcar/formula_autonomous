@@ -77,7 +77,7 @@ class ControllerNode(object):
                 print("Doing curve!")
         elif rotation == 2: #il robot è in una configurazione non ammessa , quindi ruota di 180°
             self.linear = 0
-            self.angular = self.angular * 2
+            self.angular = self.angular * 1.5
         else:
             print("Doing great!")
         
