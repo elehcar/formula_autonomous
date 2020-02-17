@@ -66,13 +66,13 @@ class ObstacleAvoidance(object):
             elif self.distanza_sx < 15:  # se ho ostacolo a sx vado a dx
                 # imposto un'accelerazione angolare che lo fa spostare un po' verso dx
                 speed.linear.x = self.linear_vel_base
-                speed.angular.z = self.angular_vel_base
+                speed.angular.z = self.angular_vel_base * -1
                 print("{OBSTACLE_AVOIDANCE} Linear: " + str(speed.linear.x) + ", Angular: " + str(speed.angular.z))
 
             elif self.distanza_dx < 15:  # se ho ostacolo a dx vado a sx
                 # imposto un'accelerazione angolare che lo fa spostare un po' verso sx (segno negativo)
                 speed.linear.x = self.linear_vel_base
-                speed.angular.z = self.angular_vel_base * -1
+                speed.angular.z = self.angular_vel_base
                 print("{OBSTACLE_AVOIDANCE} Linear: " + str(speed.linear.x) + ", Angular: " + str(speed.angular.z))
 
             else:# se non ho ostacoli a destra o sinistra continuo a fare quello che stavo facendo e passo dei valori di default
@@ -82,27 +82,27 @@ class ObstacleAvoidance(object):
             if self.distanza_sx > 15 and self.distanza_dx > 15:  # non ho ostacoli vicini a dx e a sx -> considero solo l'ostacolo davanti
                 if self.target_x < self.w / 2: # se il centroide dell'ostacolo è a sinistra rispetto al centro dell'immagine
                     speed.linear.x = self.linear_vel_base
-                    speed.angular.z = self.angular_vel_base * self.factor # vado a destra considerano il fattore impostato nella callback
+                    speed.angular.z = self.angular_vel_base * self.factor*-1 # vado a destra considerano il fattore impostato nella callback
                 elif self.target_x > self.w / 2: # se il centroide dell'ostacolo è a destra rispetto al centro dell'immagine
                     speed.linear.x = self.linear_vel_base 
-                    speed.angular.z = self.angular_vel_base * -1 * self.factor # vado a sinistra considerando il fattore nella callback
+                    speed.angular.z = self.angular_vel_base * self.factor # vado a sinistra considerando il fattore nella callback
                 else:
                     speed.linear.x = self.linear_vel_base # se il centroide dell'ostacolo è centrato per una scelta casuale vado a sx
-                    speed.angular.z = self.angular_vel_base * -1 * self.factor
+                    speed.angular.z = self.angular_vel_base * self.factor
             elif self.distanza_dx < 15 and self.distanza_sx < 15:  # ho ostacoli in tutte le direzioni -> mi fermo
                 speed.linear.x = 0
                 speed.angular.z = 0
             elif self.distanza_sx < 15:  # ho ostacolo davanti e a sx
                 if self.target_x <= self.w / 2: # se il centroide è a sx rispetto al centro dell'immagine
                     speed.linear.x = self.linear_vel_base
-                    speed.angular.z = self.angular_vel_base * self.factor # vado a dx proporzionalmente al fattore
+                    speed.angular.z = self.angular_vel_base * self.factor*-1 # vado a dx proporzionalmente al fattore
                 else: # se il centroide è a dx vado dritto 
                     speed.linear.x = self.linear_vel_base
                     speed.angular.z = 0
             else:  # ho ostacolo davanti e a dx
                 if self.target_x >= self.w/2: # il centroide è a dx
                     speed.linear.x = self.linear_vel_base
-                    speed.angular.z = self.angular_vel_base * -1 * self.factor # vado a sx
+                    speed.angular.z = self.angular_vel_base* self.factor # vado a sx
                 else: # centroide è a sx vado dritto
                     speed.linear.x = self.linear_vel_base
                     speed.angular.z = 0
