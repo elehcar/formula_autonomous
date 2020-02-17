@@ -38,7 +38,7 @@ class ControllerNode(object):
             rotation = data.rotation
             self.qr_distance = data.distance
             self.curve = data.curve
-        else: # callback relativa ad "change_obstacle",  imposta i valori delle velocità angolare e lineare degli ostacoli 
+        else: # callback relativa a "change_obstacle",  imposta i valori delle velocità angolare e lineare degli ostacoli 
             self.ob_linear = data.linear.x
             self.ob_angular = data.angular.z
 
