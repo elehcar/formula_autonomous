@@ -12,7 +12,7 @@ class Landmark:
         self.qr_data = None
         self.detector = cv2.QRCodeDetector()
 	# creazione dei vettori in cui vengono inseriti con un'iterazione
-	# i valori delle distanze contenuti nel file landmark.csv
+	# i valori delle distanze contenuti dal file landmark.csv
         self.x = np.array([]) # vettore delle aree
         self.y = np.array([]) # vettore delle distanze
         file_name = open('landmark.csv', 'rt')
