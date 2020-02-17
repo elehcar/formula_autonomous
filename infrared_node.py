@@ -19,14 +19,14 @@ class IrNode(object):
         IO.setup(9, IO.IN)  # RIGHT IR
 
     def ir_function(self):
-	#creazione del messaggio di tipo TwoBool e assegnazione alle sue componenti left e right
-	#di di ciò che leggono rispettivamente la GPIO 10 e la GPIO 9. Se gli infrarossi rilevano la linea nera restituiscono 
-	#true altrimenti false. 
+	# creazione del messaggio di tipo TwoBool e assegnazione alle sue componenti left e right
+	# di ciò che leggono rispettivamente la GPIO 10 e la GPIO 9. Se gli infrarossi rilevano la linea nera restituiscono 
+	# true altrimenti false. 
         ir_sensors = TwoBool()
         ir_sensors.left_ir = IO.input(10)
         ir_sensors.right_ir = IO.input(9)
         print("{INFRAROSSI}: sensing!")
-	# pubblicazione del messaggio su topic
+	# pubblicazione del messaggio sul topic
         self.line_foll_pub.publish(ir_sensors)
 
 
