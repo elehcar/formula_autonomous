@@ -8,7 +8,8 @@ import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
 # nodo che prende i valori pubblicati sui topic "image_topic" e "ultrasuoni_topic" e pubblica sul topic "change_obstacle" i valori di velocità
-# angolare e lineare che permettono al robot di evitare gli eventuali ostacoli rilevati dalla camera e dai sonari
+# angolare e lineare che permettono al robot di evitare gli eventuali ostacoli rilevati dalla camera e dai sonar
+
 class ObstacleAvoidance(object):
 
     def __init__(self, linear_vel_base, angular_vel_base):
@@ -30,12 +31,13 @@ class ObstacleAvoidance(object):
 	# viene creato un oggetto della classe Distance        
 	self.distance = Distance()
 	# i valori di velocità lineare e angolare di base sono inizializzati con i valori passati come parametri
-	#al momento della creazione di un oggetto della classe
+	# al momento della creazione di un oggetto della classe
         self.linear_vel_base = linear_vel_base
         self.angular_vel_base = angular_vel_base
+	
     # callback invocata ogni volta che viene pubblicato qualcosa sui due topic per cui il nodo è subscriber
     def callback(self, data, args):
-        if args == 0: # callback è relativa a "image_topic"
+        if args == 0: # la callback è relativa a "image_topic"
             cv_image = self.bridge_object.imgmsg_to_cv2(data, "bgr8")
             cropped = cv_image[100:480, 0:640] # immagine ritagliata per evitare di prendere anche altri oggetti colorati fuori dalla pista
             # cv2.imshow("im", cropped)
@@ -50,10 +52,10 @@ class ObstacleAvoidance(object):
                 self.factor = 1.2 # aumento la velocità di rotazione
             else: # ostacolo imminente
                 self.factor = 1.5 # aumento maggiormente la velocità angolare
-        else: # callback è relativa a " ultrasuoni_topic" e prendo semplicemente i valori di distanza pubblicati
+        else: # la callback è relativa a "ultrasuoni_topic" e prende semplicemente i valori di distanza pubblicati
             self.distanza_sx = data.left_us
             self.distanza_dx = data.right_us
-    # funzione per calcolare le velocità da pubblicare sul topic " change_obstacle" in base a quanto pubblicato sui topic
+    # funzione per calcolare le velocità da pubblicare sul topic "change_obstacle" in base a quanto pubblicato sui topic
     # di cui il nodo è subscriber
     def calc_speed(self):
         speed = Twist() # creazione del messaggio come tipo Twist
@@ -64,18 +66,18 @@ class ObstacleAvoidance(object):
                 print("{OBSTACLE_AVOIDANCE} Linear: " + str(speed.linear.x) + ", Angular: " + str(speed.angular.z))
 
             elif self.distanza_sx < 15:  # se ho ostacolo a sx vado a dx
-                # imposto un'accelerazione angolare che lo fa spostare un po' verso dx
+                # imposto una velocità angolare che lo fa spostare un po' verso dx (segno negativo)
                 speed.linear.x = self.linear_vel_base
                 speed.angular.z = self.angular_vel_base * -1
                 print("{OBSTACLE_AVOIDANCE} Linear: " + str(speed.linear.x) + ", Angular: " + str(speed.angular.z))
 
             elif self.distanza_dx < 15:  # se ho ostacolo a dx vado a sx
-                # imposto un'accelerazione angolare che lo fa spostare un po' verso sx (segno negativo)
+                # imposto una velocità angolare che lo fa spostare un po' verso sx
                 speed.linear.x = self.linear_vel_base
                 speed.angular.z = self.angular_vel_base
                 print("{OBSTACLE_AVOIDANCE} Linear: " + str(speed.linear.x) + ", Angular: " + str(speed.angular.z))
 
-            else:# se non ho ostacoli a destra o sinistra continuo a fare quello che stavo facendo e passo dei valori di default
+            else:  # se non ho ostacoli a destra o sinistra continuo a fare quello che stavo facendo e passo dei valori di default
                 speed.linear.x = -1000
                 speed.angular.z = -1000
         else:  # ostacolo visibile alla camera
