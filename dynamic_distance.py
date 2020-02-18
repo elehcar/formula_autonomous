@@ -12,7 +12,7 @@ class Distance:
 
         self.x = np.array([])
         self.y = np.array([])
-        file_name = open('Obstacle_little.csv', 'rt')
+        file_name = open('/home/pi/ros_catkin_ws/src/robot/scripts/Obstacle_little.csv', 'rt')
         reader = csv.reader(file_name)
         for row in reader:
             self.x = np.append(self.x, row[1])
