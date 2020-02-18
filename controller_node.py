@@ -74,6 +74,8 @@ class ControllerNode(object):
                 self.linear = self.linear * -1 # il robot fa un passo indietro
                 self.qr_distance = 0 
             else: # il robot sta facendo la curva 
+                if self.angular < -0.2:
+                    self.angular = self.angular * 0.7
                 print("Doing curve!")
         elif rotation == 2: #il robot è in una configurazione non ammessa , quindi ruota di 180°
             self.linear = 0
