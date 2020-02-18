@@ -23,7 +23,7 @@ class RobotMover(object):
         linear_speed = data.linear.x
         angular_speed = data.angular.z
 	# se sono dei valori di default, si passano a change speed le velocità precedenti, continua a fare quello che faceva
-        if (linear_speed == -1000) and (angular_speed == -1000):
+        if (linear_speed == -1000) or (angular_speed == -1000) or (linear_speed == 1000) or (angular_speed == 1000):
             self.motion_driver.change_speed(self.previous_linear, self.previous_angular)
             print("{ROBOT_MOVER} Linear: " + str(self.previous_linear) + ", Angular: " + str(self.previous_angular))
         else: # se le velocità sono cambiate, aggiorno i valori di quelle precedenti e li passo a change_speed
