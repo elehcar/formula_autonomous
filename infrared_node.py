@@ -36,4 +36,4 @@ if __name__ == "__main__":
     loop = rospy.Rate(ir_node.node_rate)
     while not rospy.is_shutdown():
         ir_node.ir_function()
-	    loop.sleep()
+        loop.sleep()
