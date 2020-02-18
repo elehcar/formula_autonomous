@@ -23,7 +23,7 @@ class ObstacleAvoidance(object):
         self.w = 640 # larghezza del frame
         self.h = 480 # altezza del frame
 	# distanze dagli ostacoli inizializzate a 0
-        self.distanza_ostacolo = 0
+        self.distanza_ostacolo = 200
         self.distanza_dx = 0
         self.distanza_sx = 0
         self.bridge_object = CvBridge()
