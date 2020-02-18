@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# coding=utf8
+
 import rospy
 from dynamic_distance import Distance
 from sensor_msgs.msg import Image
@@ -16,7 +18,7 @@ class ObstacleAvoidance(object):
 	# fattore utilizzato per modificare la rotazione del robot a seconda della distanza dall'ostacolo colorato
         self.factor = 1
         self.node_rate = 10
-        self.area = -1
+        self.area = 200000
         self.target_x = 0
         self.w = 640 # larghezza del frame
         self.h = 480 # altezza del frame
