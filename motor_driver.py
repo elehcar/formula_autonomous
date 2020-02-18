@@ -26,7 +26,7 @@ class MotorDriver(object):
         self.en1 = 13
         self.en2 = 12
 
-        self.BASE_PWM = 50
+        self.BASE_PWM = 25
         self.MAX_PWM = 100
 
         self.MULTIPLIER_STANDARD = 0.3
