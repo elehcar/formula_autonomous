@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# coding=utf8
+
 import cv2
 import numpy as np
 from scipy import interpolate
@@ -49,7 +51,7 @@ class Landmark:
             dist = 200 # landmark troppo lontano o non visibile
 	# se non siamo in nessuno dei due casi precedenti ricaviamo la distanza 
 	# attraverso un'interpolazione sui vettori di area e distanza ricavati dai valori del file landmark.csv        
-	    else:
+        else:
             f = interpolate.interp1d(self.x, self.y)
             dist = f(area)
         return dist
