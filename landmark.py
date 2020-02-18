@@ -17,7 +17,7 @@ class Landmark:
 	# i valori delle distanze contenuti dal file landmark.csv
         self.x = np.array([]) # vettore delle aree
         self.y = np.array([]) # vettore delle distanze
-        file_name = open('/home/pi/ros_catkin_ws/src/robot/scripts/landmark.csv', 'rt')
+        file_name = open('/home/pi/ros_catkin_ws/src/robot/src/scripts/landmark.csv', 'rt')
         reader = csv.reader(file_name)
         for row in reader:
             self.x = np.append(self.x, row[1])
