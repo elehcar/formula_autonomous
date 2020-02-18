@@ -62,18 +62,18 @@ class ObstacleAvoidance(object):
     def calc_speed(self):
         speed = Twist() # creazione del messaggio come tipo Twist
         if 100 < self.distanza_ostacolo <= 200:  # ostacolo non visibile o troppo lontano
-            if self.distanza_sx < 15 and self.distanza_dx < 15:  # se ho ostacoli a dx e sx
+            if self.distanza_sx < 18 and self.distanza_dx < 18:  # se ho ostacoli a dx e sx
                 speed.linear.x = self.linear_vel_base # mantengo la stessa velocità lineare di base
                 speed.angular.z = 0 # non ruoto
                 print("{OBSTACLE_AVOIDANCE} Linear: " + str(speed.linear.x) + ", Angular: " + str(speed.angular.z))
 
-            elif self.distanza_sx < 15:  # se ho ostacolo a sx vado a dx
+            elif self.distanza_sx < 18:  # se ho ostacolo a sx vado a dx
                 # imposto una velocità angolare che lo fa spostare un po' verso dx (segno negativo)
                 speed.linear.x = self.linear_vel_base
                 speed.angular.z = self.angular_vel_base * -1
                 print("{OBSTACLE_AVOIDANCE} Linear: " + str(speed.linear.x) + ", Angular: " + str(speed.angular.z))
 
-            elif self.distanza_dx < 15:  # se ho ostacolo a dx vado a sx
+            elif self.distanza_dx < 18:  # se ho ostacolo a dx vado a sx
                 # imposto una velocità angolare che lo fa spostare un po' verso sx
                 speed.linear.x = self.linear_vel_base
                 speed.angular.z = self.angular_vel_base
@@ -83,7 +83,7 @@ class ObstacleAvoidance(object):
                 speed.linear.x = -1000
                 speed.angular.z = -1000
         else:  # ostacolo visibile alla camera
-            if self.distanza_sx > 15 and self.distanza_dx > 15:  # non ho ostacoli vicini a dx e a sx -> considero solo l'ostacolo davanti
+            if self.distanza_sx > 18 and self.distanza_dx > 18:  # non ho ostacoli vicini a dx e a sx -> considero solo l'ostacolo davanti
                 if self.target_x < self.w / 2: # se il centroide dell'ostacolo è a sinistra rispetto al centro dell'immagine
                     speed.linear.x = self.linear_vel_base
                     speed.angular.z = self.angular_vel_base * self.factor*-1 # vado a destra considerano il fattore impostato nella callback
@@ -93,10 +93,10 @@ class ObstacleAvoidance(object):
                 else:
                     speed.linear.x = self.linear_vel_base # se il centroide dell'ostacolo è centrato per una scelta casuale vado a sx
                     speed.angular.z = self.angular_vel_base * self.factor
-            elif self.distanza_dx < 15 and self.distanza_sx < 15:  # ho ostacoli in tutte le direzioni -> mi fermo
+            elif self.distanza_dx < 18 and self.distanza_sx < 18:  # ho ostacoli in tutte le direzioni -> mi fermo
                 speed.linear.x = 0
                 speed.angular.z = 0
-            elif self.distanza_sx < 15:  # ho ostacolo davanti e a sx
+            elif self.distanza_sx < 18:  # ho ostacolo davanti e a sx
                 if self.target_x <= self.w / 2: # se il centroide è a sx rispetto al centro dell'immagine
                     speed.linear.x = self.linear_vel_base
                     speed.angular.z = self.angular_vel_base * self.factor*-1 # vado a dx proporzionalmente al fattore
