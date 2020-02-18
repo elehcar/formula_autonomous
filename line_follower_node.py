@@ -7,8 +7,7 @@ from std_msgs.msg import TwoBool, Int16
 from geometry_msgs.msg import Twist
 
 # nodo che prendendo i valori restituiti dagli infrarossi attraverso il topic "ir_node_topic" cambia i valori di velocità angolare e lineare
-# per permettere al robot di seguire la linea
-
+# per permettere al robot di seguire la linea.
 class LineFollower(object):
 
     def __init__(self, linear_vel_base, angular_vel_base):
@@ -25,7 +24,6 @@ class LineFollower(object):
 	# valori di base della velocità lineare e angolare passati come parametri al momento della creazione di un oggetto della classe
         self.linear_vel_base = linear_vel_base
         self.angular_vel_base = angular_vel_base
-	
     # callback invocata quando viene pubblicato qualcosa sul topic "ir_node_topic" e che pubblica sul topic "line_foll_topic"
     # i valori relativi alla velocità angolare e lineare che permettono di seguire la linea.
     def line_foll_callback(self, ir_sensors):
@@ -60,5 +58,5 @@ class LineFollower(object):
 
 if __name__ == "__main__":
     rospy.init_node("line_follower", anonymous=True)
-    line_follower = LineFollower(0.10, 0.18)
+    line_follower = LineFollower(0.15, 0.27)
     rospy.spin()

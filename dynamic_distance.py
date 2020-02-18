@@ -112,7 +112,7 @@ class Distance:
     def distancetoCamera(self, sup):
 	# se l'area è maggiore del valore più alto possibile si restituisce 0 e l'ostacolo è considerato imminente
         if sup > 111459.0:
-            return 0
+            return 200
 	# se l'area è minore del valore più basso possibile si restituisce 200 e l'ostacolo è considerato lontano o non visibile
         elif sup < 3937.5: 
             return 200

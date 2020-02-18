@@ -12,6 +12,7 @@ from std_msgs.msg import IntString
 class ControllerNode(object):
 
     def __init__(self):
+        self.previous_rotation = -1
         self.orientation = None # serve per gestire le situazioni in cui il robot gira a dx (o a sx) per un ostacolo e quando
                                 # vede nuovamente la linea sempre a dx (o a sx) continua a girare troppo andano a sbattere contro
                                 # la parete. Quindi in questa situazione lo facciamo girare in direzione opposta
@@ -36,9 +37,13 @@ class ControllerNode(object):
             self.line_angular = data.angular.z
         elif args == 2: # callback relativa al "planning_topic", aggiorna il valore di rotation, distanza dal landmark e dice se il landmark visto è prossimo a una curva
             rotation = data.rotation
+            if self.previous_rotation == rotation:
+                rotation = 0
+            else:
+                self.previous_rotation = rotation
             self.qr_distance = data.distance
             self.curve = data.curve
-        else: # callback relativa a "change_obstacle",  imposta i valori delle velocità angolare e lineare degli ostacoli 
+        else: # callback relativa ad "change_obstacle",  imposta i valori delle velocità angolare e lineare degli ostacoli 
             self.ob_linear = data.linear.x
             self.ob_angular = data.angular.z
 
@@ -50,7 +55,7 @@ class ControllerNode(object):
             # contro la parete
             if (self.orientation == 0 and self.line_angular < 0) or (self.orientation == 1 and self.line_angular > 0):
                 self.angular = self.line_angular * -1
-            else: # se non siamo nella situazione critica precedente passa la velocità angolare così come pubblicata
+            else: # se non siamo nella situazione critica precedente passa l'accelerazione angolare così come pubblicata
                   # dal nodo line_follower
                 self.angular = self.line_angular
             self.orientation = None
@@ -58,9 +63,9 @@ class ControllerNode(object):
             print("{DECISION_NODE} SPEED==> Line: [" + str(self.linear) + "," + str(self.angular) + "]")
         # se invece ci sono gli ostacoli da considerare
         else:
-            if self.ob_angular < 0:  # velocità angolare negativa, il robot gira a sx
+            if self.ob_angular < 0:  # accelerazione angolare negativa, il robot gira a sx
                 self.orientation = 0
-            else:  # velocità angolare positiva il robot gira a dx
+            else:  # accelerazione angolare positiva il robot gira a dx
                 self.orientation = 1
             self.linear = self.ob_linear
             self.angular = self.ob_angular
@@ -73,7 +78,9 @@ class ControllerNode(object):
                 print("TURN OPPOSITE")
                 self.linear = self.linear * -1 # il robot fa un passo indietro
                 self.qr_distance = 0 
-            else: # il robot sta facendo la curva 
+            else: # il robot sta facendo la curva
+                if self.angular < -0.2:
+                    self.angular = self.angular * 0.7
                 print("Doing curve!")
         elif rotation == 2: #il robot è in una configurazione non ammessa , quindi ruota di 180°
             self.linear = 0
@@ -90,5 +97,5 @@ class ControllerNode(object):
 
 if __name__ == "__main__":
     rospy.init_node("decision_node", anonymous=True)
-    ob = Controller()
+    ob = ControllerNode()
     rospy.spin()

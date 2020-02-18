@@ -6,25 +6,27 @@ from picamera import PiCamera
 from picamera.array import PiRGBArray
 import time
 # codice utilizzato per inizializzare i file .csv delle misure delle distanze dagli ostacoli e dai landmark del percorso
-
-# metodo che permette di calcolare l'area e la coordinata x del centroide della superficie, individuata con un range di colore, di dimensione massima all'interno dell'immagine passata come argomento 
+# metodo che permette di calcolare l'area e la coordinata x del centroide della superficie di dimensione massimo all'interno dell'immagine passata come argomento
+# individuata con un range di colore
 def find_area(image):
-    # immagine sfumata per eliminare eventuale rumore
+    # immagine blurrata per eliminare eventuale rumore
     image_blur = cv2.GaussianBlur(image, (5, 5), 0)
-    # conversione dell'immagine da BGR ad HSV
+    # conversione dell'immagine a BGR ad HSV
     img_hsv = cv2.cvtColor(image_blur, cv2.COLOR_BGR2HSV)
+    # lowred = np.array([0, 57, 82])
+    # highred = np.array([21, 255, 255])
     # estremi del range di colore utilizzato per il filtraggio
     lowblue = np.array([80, 70, 20])
     highblue = np.array([120, 255, 255])
-    # immagine binaria in cui con il bianco sono indicate le aree in cui pixel hanno valori HSV che ricadono all'interno del range
-    # il background è nero
+    # immagine binaria in cui con il bianco sono indicate quelle aree i cui pixel hanno valori HSV che ricadono all'interno del range
+    # il background è nero.
     blue_mask = cv2.inRange(img_hsv, lowblue, highblue)
     mask_filter = cv2.morphologyEx(green_mask, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
     # Immagine in cui sono indicati i bordi delle aree
     edged_img = cv2.Canny(mask_filter.copy(), 35, 125)
     # cv2.imshow('Edged', edged_img)
     # cv2.waitKey(1000)
-    # restituisce tutti i contorni chiusi di un'immagine binaria 
+    # restituisce tutti i contorni chiusi di un immagine binaria 
     cnts, hierarchy = cv2.findContours(edged_img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     # se non ci sono contorni rilevati si restituisce 0 come area e 0 per il target_x
     if not cnts:
@@ -83,7 +85,7 @@ time.sleep(2)
 f = open(sys.argv[1], 'wt')
 writer = csv.writer(f)
 j = 20
-# inserimento delle righe nel file csv finchè la variabile j < 150 come coppia (indice, area dell'immagine)
+# inserimento delle righe nel file csv finchè la variabile j < 150 come coppia( indice, area dell'immagine)
 while j < 150:
     camera.capture(rawCapture, format='bgr')
     imm = rawCapture.array

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# coding=utf8
+
 import rospy
 import RPi.GPIO as GPIO
 import time
