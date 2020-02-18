@@ -92,5 +92,5 @@ class ControllerNode(object):
 
 if __name__ == "__main__":
     rospy.init_node("decision_node", anonymous=True)
-    ob = Controller()
+    ob = ControllerNode()
     rospy.spin()
