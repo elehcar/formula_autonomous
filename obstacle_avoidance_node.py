@@ -121,4 +121,4 @@ if __name__ == '__main__':
     loop = rospy.Rate(obstacle_avoidance.node_rate)
     while not rospy.is_shutdown():
         obstacle_avoidance.calc_speed()
-	    loop.sleep()
+        loop.sleep()
