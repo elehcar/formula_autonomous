@@ -117,7 +117,7 @@ class ObstacleAvoidance(object):
 
 if __name__ == '__main__':
     rospy.init_node('obstacle_avoidance', anonymous=True)
-    obstacle_avoidance = ObstacleAvoidance(0.15, 0.26)
+    obstacle_avoidance = ObstacleAvoidance(0.12, 0.28)
     loop = rospy.Rate(obstacle_avoidance.node_rate)
     while not rospy.is_shutdown():
         obstacle_avoidance.calc_speed()
