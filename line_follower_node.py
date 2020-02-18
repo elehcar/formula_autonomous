@@ -60,5 +60,5 @@ class LineFollower(object):
 
 if __name__ == "__main__":
     rospy.init_node("line_follower", anonymous=True)
-    line_follower = LineFollower(0.10, 0.18)
+    line_follower = LineFollower(0.15, 0.27)
     rospy.spin()
