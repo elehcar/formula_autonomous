@@ -40,29 +40,33 @@ class PlannerNode:
 
         msg.distance = self.qr_distance
 
-        if self.qr_code == "1" or self.qr_code == "2": # se il landmark è il n.1 o il n.2
+        if self.qr_code == "2" or self.qr_code == "3": # se il landmark è il n.2 o il n.3
 	    # si impostano i limiti superiore e inferiore che la bussola può segnare per avere 
 	    # l'orientazione giusta nel primo lato della pista 
             self.lowlimit = 280
             self.upperlimit = 350
-            if self.qr_code == "2": # se il landmark visto è quello di curva 
+            if self.qr_code == "3": # se il landmark visto è quello di curva 
                 self.curve = True # imposto il flag di curva a true
             else:
                 self.curve = False # non è un landmark di curva e si imposta il flag a false
-        elif self.qr_code == "3" or self.qr_code == "4": # se il landmark è il n.3 o il n.4
+        elif self.qr_code == "4" or self.qr_code == "5": # se il landmark è il n.4 o il n.5
 	    # si impostano i limiti superiore e inferiore che la bussola può segnare per avere 
 	    # l'orientazione giusta nel secondo lato della pista
-            self.lowlimit = 125
+            self.lowlimit = 115
             self.upperlimit = 180
-            if self.qr_code == "4":# se il landmark visto è quello di curva 
+            if self.qr_code == "5": # se il landmark visto è quello di curva 
                 self.curve = True # imposto il flag di curva a true
             else:
                 self.curve = False # non è un landmark di curva e si imposta il flag a false
-        elif self.qr_code == "5":  # se il landmark è il n.5si impostano i limiti superiore e
-	    # inferiore che la bussola può segnare per avere l'orientazione giusta nell'ultimo lato della pista
-            self.lowlimit = 32
-            self.upperlimit = 80
-            self.curve = False
+        elif self.qr_code == "1" or self.qr_code == "6":  # se il landmark è il n.1 o il n.6
+	    # si impostano i limiti superiore e inferiore che la bussola può segnare per avere 
+	    # l'orientazione giusta nel terzo lato della pista
+            self.lowlimit = 30
+            self.upperlimit = 75
+            if self.qr_code == "1": # se il landmark visto è quello di curva
+                self.curve = True # imposto il flag di curva a true
+            else:
+                self.curve = False  # non è un landmark di curva e si imposta il flag a false
         else:  # landmark non visibile
             self.lowlimit = 0
             self.upperlimit = 359
