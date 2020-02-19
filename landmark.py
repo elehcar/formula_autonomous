@@ -17,7 +17,7 @@ class Landmark:
 	# i valori delle distanze contenuti dal file landmark.csv
         self.x = np.array([]) # vettore delle aree
         self.y = np.array([]) # vettore delle distanze
-        file_name = open('/home/pi/ros_catkin_ws/src/robot/src/scripts/landmark.csv', 'rt')
+        file_name = open('/home/pi/ros_catkin_ws/src/robot/src/scripts/landmark_measure.csv', 'rt')
         reader = csv.reader(file_name)
         for row in reader:
             self.x = np.append(self.x, row[1])
@@ -44,10 +44,10 @@ class Landmark:
         b = abs(y2-y3)
         area = h*b
 	# se l'area è maggiore di quella massima contenuta nel file si restituisce 0
-        if area > 945.2836298234761:
+        if area > 1399.065751497401:
             dist = 0 # landmark troppo vicino
 	# se l'area è minore di quella minima contenuta nel file si restituisce 200
-        elif area < 75.92754949163646:
+        elif area < 558.9713635649532:
             dist = 200 # landmark troppo lontano o non visibile
 	# se non siamo in nessuno dei due casi precedenti ricaviamo la distanza 
 	# attraverso un'interpolazione sui vettori di area e distanza ricavati dai valori del file landmark.csv        
