@@ -9,7 +9,7 @@ class SenseNode:
 	def __init__(self):
 		self.node_rate = 10
 		self.sense = SenseHat()
-		self.pub = rospy.Publisher('magnetometer_topic', Float32, queue_size=10)
+		self.pub = rospy.Publisher('magnetometer_topic', TwoFloat, queue_size=10)
 	# funzione che usa il metodo get_compass della classe SenseHat che restituisce i gradi rispetto al Nord magnetico
 	def sensing(self):
                 self.sense.set_imu_config(True, True, True)
