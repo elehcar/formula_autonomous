@@ -27,6 +27,7 @@ class ControllerNode(object):
         rospy.Subscriber("change_obstacle", Twist, self.decision_callback, 1)
         rospy.Subscriber("planning_topic", IntString, self.decision_callback, 2)
         self.pub = rospy.Publisher("cmd_vel_topic", Twist, queue_size=1)
+        
     # callback invocata ogni volta che qualcosa è pubblicato su uno dei nodi per cui è subscriber
     def decision_callback(self, data, args):
         rotation = 0 # inizializzata a 0 ogni volta che si chiama una callback, serve per identificare configurazioni non permesse al robot
