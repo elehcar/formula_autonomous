@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import Float32
+from std_msgs.msg import TwoFloat
 from sense_hat import SenseHat
 
 # nodo che pubblica sul topic "magnetometer_topic" un valore float che rappresenta la rotazione rispetto al Nord geomagnetico
@@ -13,9 +14,17 @@ class SenseNode:
 	def sensing(self):
                 self.sense.set_imu_config(True, True, True)
                 o = self.sense.get_orientation()
+		a = self.sense.get_accelerometer_raw()
                 north = o["yaw"]
-		# north = self.sense.get_compass()
-                self.pub.publish(north)
+                x = a["x"]
+                y = a["y"]
+                z = a["z"]msg = TwoFloat()
+                # north = self.sense.get_compass()
+                msg.left_us = north
+                if x < 1 and y <1 and z < 1:
+                    msg.right_us = 0.0
+                else:
+                    msg.right_us = 1.0
 		print("{SENSE_HAT} North: " + str(north))
 
 
