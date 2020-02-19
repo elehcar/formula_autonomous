@@ -3,7 +3,7 @@
 import rospy
 import cv2
 from landmark import Landmark
-from std_msgs.msg import IntString, Float32
+from std_msgs.msg import IntString, TwoFloat
 from sensor_msgs.msg import Image
 import csv
 from cv_bridge import CvBridge, CvBridgeError
@@ -23,7 +23,7 @@ class PlannerNode:
 
         self.pub = rospy.Publisher("planning_topic", IntString, queue_size=10)
         rospy.Subscriber("qr_topic", Image, self.planner_callback, 0)
-        rospy.Subscriber("magnetometer_topic", Float32, self.planner_callback, 1)
+        rospy.Subscriber("magnetometer_topic", TwoFloat, self.planner_callback, 1)
 
     # callback invocata ogni qual volta viene pubblicato qualcosa su uno dei due topic per cui il nodo è 
     # subscriber
@@ -31,7 +31,8 @@ class PlannerNode:
         raw_grades = 5  # range di tolleranza per i gradi
         msg = IntString() # creazione del messaggio da pubblicare su "planning_topic"
         if arg == 1: # callback relativa al magnetometer_topic
-            self.north = data.data
+            self.north = data.left_us
+	    self.accel = data.right_us
         else: # callback relativa al qr_topic
             cv_image = self.bridge_object.imgmsg_to_cv2(data, "bgr8")
             cropped = cv_image[0:250, 0:640]  # immagine ritagliata per centrare il landmark
@@ -73,16 +74,18 @@ class PlannerNode:
             self.curve = False
 
         msg.curve = self.curve
-        if self.lowlimit <= self.north <= self.upperlimit: # la bussola segna un'orientazione nei limiti impostati a seconda del tratto 
-        # di pista che si sta percorrendo
-            msg.rotation = 0  # Normal
-        elif (self.lowlimit-raw_grades <= self.north < self.lowlimit) or (self.upperlimit < self.north <= self.upperlimit + raw_grades):
-	    # Turn Opposite ( nel caso in cui la bussola segni un'orientazione sotto il limite inferiore di una quantità non maggiore 
-	    # a raw_grades oppure sopra il limite superiore di una quantità non maggiore a raw_grades)
+        if self.accel == 1.0:
+            if self.lowlimit <= self.north <= self.upperlimit: # la bussola segna un'orientazione nei limiti impostati a seconda del tratto 
+            # di pista che si sta percorrendo
+                msg.rotation = 0  # Normal
+            elif (self.lowlimit-raw_grades <= self.north < self.lowlimit) or (self.upperlimit < self.north <= self.upperlimit + raw_grades):
+	        # Turn Opposite ( nel caso in cui la bussola segni un'orientazione sotto il limite inferiore di una quantità non maggiore 
+	        # a raw_grades oppure sopra il limite superiore di una quantità non maggiore a raw_grades)
+                msg.rotation = 1
+            else:  # il robot risulta con un'orientazione completamente sbagliata -> inversione
+                msg.rotation = 2  # Invert
+        else:
             msg.rotation = 1
-        else:  # il robot risulta con un'orientazione completamente sbagliata -> inversione
-            msg.rotation = 2  # Invert
-
         print("{PLANNING_NODE} Rotation: " + str(msg.rotation) + ", Distance: " + str(msg.distance) + ",  Curva: " + str(msg.curve))
         self.pub.publish(msg)
 
